@@ -1,0 +1,59 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+.venv/
+venv/
+ENV/
+
+# Testing & Linting
+.pytest_cache/
+.coverage
+htmlcov/
+.ruff_cache/
+.mypy_cache/
+
+# Environment variables & Secrets
+.env
+*.pem
+*.key
+terraform/*.tfstate
+terraform/*.tfstate.*
+terraform/.terraform/
+terraform/.terraform.lock.hcl
+terraform/terraform.tfvars
+
+# Databricks Asset Bundles
+.databricks/
+
+# dbt
+dbt_citi_bike/target/
+dbt_citi_bike/dbt_packages/
+dbt_citi_bike/logs/
+
+# Local Data (keep sample gold parquets for instant dashboard demo, ignore raw zips/large files)
+data/raw/*.zip
+data/raw/*.csv
+data/bronze/*.parquet
+data/silver/*.parquet
+
+# OS
+.DS_Store
+Thumbs.db

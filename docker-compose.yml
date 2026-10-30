@@ -1,0 +1,23 @@
+services:
+  pipeline-and-dashboard:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: citi-bike-lakehouse
+    env_file:
+      - path: .env
+        required: false
+    environment:
+      - PIPELINE_ENV=${PIPELINE_ENV:-local}
+      - CITIBIKE_YEAR_MONTHS=${CITIBIKE_YEAR_MONTHS:-202401,202402,202403}
+      - CITIBIKE_DATASET_PREFIX=${CITIBIKE_DATASET_PREFIX:-JC-}
+      - LOCAL_DATA_DIR=/app/data
+    ports:
+      - "8501:8501"
+    volumes:
+      - ./data:/app/data
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8501/_stcore/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3

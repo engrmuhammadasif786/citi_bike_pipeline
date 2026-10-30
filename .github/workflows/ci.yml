@@ -1,0 +1,59 @@
+name: NYC Citi Bike Lakehouse CI/CD
+
+on:
+  push:
+    branches: ["main", "master"]
+  pull_request:
+    branches: ["main", "master"]
+
+jobs:
+  lint-test-and-verify:
+    name: Lint, Unit Tests & Medallion Pipeline Verification
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: "pip"
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install -e .
+
+      - name: Run Ruff Linter
+        run: ruff check src/ tests/ dashboard/
+
+      - name: Run Pytest Suite
+        run: pytest tests/ -v --cov=citi_bike_pipeline
+
+      - name: Run End-to-End Local Medallion Pipeline Smoke Test
+        env:
+          PIPELINE_ENV: local
+          CITIBIKE_YEAR_MONTHS: "202401,202402"
+        run: python -m citi_bike_pipeline.cli run-all
+
+  terraform-validate:
+    name: Validate Terraform IaC (AWS S3 + Databricks)
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: "1.7.5"
+
+      - name: Terraform Format Check & Validate
+        working-directory: terraform
+        run: |
+          terraform init -backend=false
+          terraform validate

@@ -1,0 +1,28 @@
+bundle:
+  name: citi_bike_lakehouse_pipeline
+
+include:
+  - resources/*.yml
+
+variables:
+  catalog:
+    description: Unity Catalog name for Medallion schemas
+    default: citi_bike_catalog
+  s3_bucket:
+    description: AWS S3 bucket for raw Citi Bike data landing
+    default: citi-bike-lakehouse-raw-dev
+  year_months:
+    description: Comma-separated YYYYMM partitions to process
+    default: "202401,202402,202403"
+
+targets:
+  dev:
+    mode: development
+    default: true
+    workspace:
+      root_path: ~/.bundle/${bundle.name}/${bundle.target}
+
+  prod:
+    mode: production
+    workspace:
+      root_path: /Shared/.bundle/${bundle.name}/${bundle.target}

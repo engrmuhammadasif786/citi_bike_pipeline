@@ -1,0 +1,7 @@
+aws_region         = "us-east-1"
+environment        = "dev"
+s3_bucket_name     = "citi-bike-lakehouse-raw"
+databricks_host    = "https://dbc-xxxxxxxx-xxxx.cloud.databricks.com"
+unity_catalog_name = "citi_bike_catalog"
+git_repo_url       = "https://github.com/your-username/citi_bike_pipeline.git"
+notification_email = "your-email@example.com"

@@ -1,0 +1,17 @@
+dbt_citi_bike:
+  target: "{{ env_var('PIPELINE_ENV', 'databricks') }}"
+  outputs:
+    databricks:
+      type: databricks
+      catalog: "{{ env_var('DATABRICKS_CATALOG', 'citi_bike_catalog') }}"
+      schema: "{{ env_var('DATABRICKS_GOLD_SCHEMA', 'gold') }}"
+      host: "{{ env_var('DATABRICKS_HOST', 'dbc-placeholder.cloud.databricks.com') }}"
+      http_path: "{{ env_var('DATABRICKS_HTTP_PATH', '/sql/1.0/warehouses/placeholder') }}"
+      token: "{{ env_var('DATABRICKS_TOKEN', 'dapi-placeholder') }}"
+      threads: 4
+
+    local:
+      type: duckdb
+      path: "../data/citi_bike_lakehouse.duckdb"
+      schema: gold
+      threads: 4

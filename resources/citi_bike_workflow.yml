@@ -1,0 +1,62 @@
+resources:
+  jobs:
+    citi_bike_medallion_workflow:
+      name: "[${bundle.target}] NYC Citi Bike Medallion Lakehouse Pipeline"
+      description: "Orchestrated multi-task DAG: S3 Landing -> Bronze Delta -> Silver Partitioned/Clustered Delta -> dbt Gold Marts & Quality Checks"
+
+      schedule:
+        quartz_cron_expression: "0 0 6 5 * ?"
+        timezone_id: "UTC"
+        pause_status: PAUSED
+
+      environments:
+        - environment_key: serverless
+          spec:
+            client: "1"
+
+      tasks:
+        - task_key: ingest_to_s3
+          description: "Download monthly Citi Bike ZIP archives with retry/validation and upload to AWS S3 Data Lake"
+          environment_key: serverless
+          spark_python_task:
+            python_file: ../notebooks/01_ingest_to_s3.py
+            parameters:
+              - "--s3-bucket"
+              - "${var.s3_bucket}"
+              - "--year-months"
+              - "${var.year_months}"
+
+        - task_key: bronze_ingestion
+          description: "Load raw CSV files from S3 into Unity Catalog Bronze Delta table with audit metadata"
+          depends_on:
+            - task_key: ingest_to_s3
+          environment_key: serverless
+          spark_python_task:
+            python_file: ../notebooks/02_bronze_ingestion.py
+            parameters:
+              - "--catalog"
+              - "${var.catalog}"
+              - "--s3-bucket"
+              - "${var.s3_bucket}"
+
+        - task_key: silver_transformation
+          description: "Clean, deduplicate, enrich, partition by trip_year_month, and Z-ORDER/Liquid Cluster Silver table"
+          depends_on:
+            - task_key: bronze_ingestion
+          environment_key: serverless
+          spark_python_task:
+            python_file: ../notebooks/03_silver_transformation.py
+            parameters:
+              - "--catalog"
+              - "${var.catalog}"
+
+        - task_key: gold_marts_and_quality
+          description: "Build Gold dimensional and analytical marts and enforce data quality gates"
+          depends_on:
+            - task_key: silver_transformation
+          environment_key: serverless
+          spark_python_task:
+            python_file: ../notebooks/04_gold_marts_and_quality.py
+            parameters:
+              - "--catalog"
+              - "${var.catalog}"

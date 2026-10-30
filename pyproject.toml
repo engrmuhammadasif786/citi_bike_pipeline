@@ -1,0 +1,57 @@
+[build-system]
+requires = ["setuptools>=68.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "citi-bike-pipeline"
+version = "1.0.0"
+description = "End-to-End NYC Citi Bike Lakehouse Data Pipeline with AWS S3, Terraform, Databricks Workflows, PySpark, dbt, and Streamlit"
+readme = "README.md"
+requires-python = ">=3.10"
+license = {text = "MIT"}
+authors = [
+    {name = "Data Engineering Portfolio"}
+]
+dependencies = [
+    "requests>=2.31.0",
+    "urllib3>=2.0.0",
+    "boto3>=1.34.0",
+    "pandas>=2.1.0",
+    "pyarrow>=14.0.0",
+    "duckdb>=0.10.0",
+    "python-dotenv>=1.0.0",
+    "streamlit>=1.32.0",
+    "plotly>=5.19.0",
+]
+
+[project.optional-dependencies]
+databricks = [
+    "pyspark>=3.5.0",
+    "delta-spark>=3.1.0",
+    "databricks-sql-connector>=3.0.0",
+    "databricks-sdk>=0.20.0",
+    "dbt-core>=1.7.0",
+    "dbt-databricks>=1.7.0",
+    "dbt-duckdb>=1.7.0",
+]
+dev = [
+    "pytest>=8.0.0",
+    "pytest-cov>=4.1.0",
+    "ruff>=0.3.0",
+]
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["src"]
+addopts = "-v --tb=short"
+
+[tool.ruff]
+line-length = 100
+target-version = "py310"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "W"]
+ignore = ["E501"]

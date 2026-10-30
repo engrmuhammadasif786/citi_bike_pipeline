@@ -1,0 +1,44 @@
+version: 2
+
+models:
+  - name: mart_categorical_usage
+    description: "Gold categorical aggregation mart for BI Tile 1 (Rider Segment, Bike Type, and Time-of-Day Breakdown)"
+    columns:
+      - name: trip_year_month
+        tests:
+          - not_null
+      - name: rider_type
+        tests:
+          - not_null
+          - accepted_values:
+              values: ["Annual Member", "Casual Rider"]
+      - name: rideable_type_clean
+        tests:
+          - not_null
+      - name: total_trips
+        tests:
+          - not_null
+
+  - name: mart_temporal_mobility
+    description: "Gold temporal aggregation mart for BI Tile 2 (Daily & Hourly Ride Volume Trends)"
+    columns:
+      - name: started_date
+        tests:
+          - not_null
+      - name: start_hour
+        tests:
+          - not_null
+      - name: total_trips
+        tests:
+          - not_null
+
+  - name: dim_stations
+    description: "Gold station dimension and utilization metrics for geospatial station analysis"
+    columns:
+      - name: station_id
+        tests:
+          - unique
+          - not_null
+      - name: station_name
+        tests:
+          - not_null

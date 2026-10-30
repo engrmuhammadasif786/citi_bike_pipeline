@@ -1,0 +1,21 @@
+version: 2
+
+sources:
+  - name: silver
+    description: "Cleaned, deduplicated, and partitioned Silver layer in Unity Catalog"
+    schema: "{{ env_var('DATABRICKS_SILVER_SCHEMA', 'silver') }}"
+    tables:
+      - name: clean_trips
+        description: "Validated Citi Bike trips partitioned by trip_year_month and clustered by start_station_id, started_date"
+        columns:
+          - name: ride_id
+            description: "Unique primary key per Citi Bike trip"
+            tests:
+              - unique
+              - not_null
+          - name: started_at_ts
+            tests:
+              - not_null
+          - name: ended_at_ts
+            tests:
+              - not_null

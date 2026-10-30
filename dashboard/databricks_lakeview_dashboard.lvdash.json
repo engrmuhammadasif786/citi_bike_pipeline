@@ -1,0 +1,51 @@
+{
+  "datasets": [
+    {
+      "name": "ds_categorical_usage",
+      "displayName": "Gold Categorical Usage Mart",
+      "query": "SELECT trip_year_month, rider_type, rideable_type_clean, time_of_day_bucket, is_weekend, total_trips, avg_duration_minutes, avg_distance_km FROM citi_bike_catalog.gold.mart_categorical_usage"
+    },
+    {
+      "name": "ds_temporal_mobility",
+      "displayName": "Gold Temporal Mobility Mart",
+      "query": "SELECT started_date, trip_year_month, start_hour, day_of_week_name, is_weekend, rider_type, rideable_type_clean, total_trips, avg_duration_minutes FROM citi_bike_catalog.gold.mart_temporal_mobility"
+    },
+    {
+      "name": "ds_dim_stations",
+      "displayName": "Gold Station Performance Dimension",
+      "query": "SELECT station_id, station_name, station_lat, station_lng, total_departures, avg_duration_minutes, member_share_pct, ebike_share_pct FROM citi_bike_catalog.gold.dim_stations ORDER BY total_departures DESC LIMIT 25"
+    }
+  ],
+  "pages": [
+    {
+      "name": "overview",
+      "displayName": "NYC Citi Bike Lakehouse Executive Overview",
+      "layout": [
+        {
+          "widget": {
+            "name": "tile_1_categorical_distribution",
+            "title": "Tile 1: Categorical Distribution — Trips by Commute Window, Rider Segment & Bike Type",
+            "dataset": "ds_categorical_usage",
+            "visualization": "bar_grouped",
+            "x": "time_of_day_bucket",
+            "y": "total_trips",
+            "color": "rideable_type_clean"
+          },
+          "position": { "x": 0, "y": 0, "width": 6, "height": 6 }
+        },
+        {
+          "widget": {
+            "name": "tile_2_temporal_distribution",
+            "title": "Tile 2: Temporal Distribution — Daily Ride Volume Timeline by Rider Type",
+            "dataset": "ds_temporal_mobility",
+            "visualization": "line_timeseries",
+            "x": "started_date",
+            "y": "total_trips",
+            "color": "rider_type"
+          },
+          "position": { "x": 6, "y": 0, "width": 6, "height": 6 }
+        }
+      ]
+    }
+  ]
+}
