@@ -183,6 +183,11 @@ resource "databricks_job" "citi_bike_medallion_pipeline" {
     environment_key = "serverless"
     spec {
       client = "1"
+      dependencies = [
+        "python-dotenv>=1.0.0",
+        "requests>=2.31.0",
+        "boto3>=1.34.0"
+      ]
     }
   }
 
