@@ -192,7 +192,8 @@ resource "databricks_job" "citi_bike_medallion_pipeline" {
     environment_key = "serverless"
 
     spark_python_task {
-      python_file = "/Users/apple/development/python/citi_bike_pipeline/notebooks/01_ingest_to_s3.py"
+      python_file = "notebooks/01_ingest_to_s3.py"
+      source      = "GIT"
       parameters = [
         "--s3-bucket", aws_s3_bucket.citi_bike_datalake.id,
         "--year-months", "202401,202402,202403"
@@ -209,7 +210,8 @@ resource "databricks_job" "citi_bike_medallion_pipeline" {
     }
 
     spark_python_task {
-      python_file = "/Users/apple/development/python/citi_bike_pipeline/notebooks/02_bronze_ingestion.py"
+      python_file = "notebooks/02_bronze_ingestion.py"
+      source      = "GIT"
       parameters = [
         "--catalog", databricks_catalog.citi_bike.name,
         "--s3-bucket", aws_s3_bucket.citi_bike_datalake.id
@@ -226,7 +228,8 @@ resource "databricks_job" "citi_bike_medallion_pipeline" {
     }
 
     spark_python_task {
-      python_file = "/Users/apple/development/python/citi_bike_pipeline/notebooks/03_silver_transformation.py"
+      python_file = "notebooks/03_silver_transformation.py"
+      source      = "GIT"
       parameters = [
         "--catalog", databricks_catalog.citi_bike.name
       ]
@@ -242,7 +245,8 @@ resource "databricks_job" "citi_bike_medallion_pipeline" {
     }
 
     spark_python_task {
-      python_file = "/Users/apple/development/python/citi_bike_pipeline/notebooks/04_gold_marts_and_quality.py"
+      python_file = "notebooks/04_gold_marts_and_quality.py"
+      source      = "GIT"
       parameters = [
         "--catalog", databricks_catalog.citi_bike.name
       ]
