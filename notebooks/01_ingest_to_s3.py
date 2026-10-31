@@ -7,10 +7,19 @@ import os
 import sys
 from pathlib import Path
 
-sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
+project_root = Path.cwd().resolve()
+while project_root != project_root.parent and not (
+    project_root / "src" / "citi_bike_pipeline"
+).is_dir():
+    project_root = project_root.parent
 
-from citi_bike_pipeline.config import PipelineConfig
-from citi_bike_pipeline.ingestion.citibike_ingestor import CitiBikeIngestor
+package_source = project_root / "src"
+if not (package_source / "citi_bike_pipeline").is_dir():
+    raise ModuleNotFoundError(f"Cannot locate src/citi_bike_pipeline from {Path.cwd()}")
+sys.path.insert(0, str(package_source))
+
+from citi_bike_pipeline.config import PipelineConfig  # noqa: E402
+from citi_bike_pipeline.ingestion.citibike_ingestor import CitiBikeIngestor  # noqa: E402
 
 
 def main() -> None:
